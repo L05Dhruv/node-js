@@ -26,6 +26,7 @@ const DELETE_CAR = "delete from car where car_id = ?"
 exports.selectPersonById = async (personId) => {
     try {
         const [rows] = await promisePool.query(SELECT_PERSON, [personId])
+        // const [rows] = await promisePool.query('SELECT * FROM person WHERE person_id = $1', [personId])
         return rows[0]
     }
     catch (e) {
