@@ -26,25 +26,6 @@ app.get('/', cors(corsOptions), (req, res) => {
 // express.static() needs and absolute path to a directory & can send many static files
 app.use(express.static(path.join(__dirname, '../client')));
 
-
-
-
-
-
-
-// app.get('/', cors(corsOptions), async (req, res) => {
-//     // sendFile() needs an Absolute path
-//     res.sendFile('../client/index.html') // <--- relative path
-    
-//     const indexHTMLPath = path.join(__dirname, '../client/index.html');
-//     res.sendFile(indexHTMLPath);
-// });
-
-// app.use(express.static(path.join(__dirname, '../client'))); // <-- creates an absolute path and serves the folder
-
-
-// app.use(express.static(path.join(__dirname, '../client')));
-
 // Your endpoints here..
 app.get('/person', cors(corsOptions), async (req, res) => { 
     //const id = req.params['id']                  // Read parameters from URL.
@@ -61,31 +42,33 @@ app.get('/cars', cors(corsOptions), async (req, res) => {
     res.send(body);
 });
 
-// app.get('/cars/:id/:make', cors(corsOptions), async (err, req, res, next) => {
-//     const { id, make } = req.params;
+// 4 parameters approach
 
-//     const [rows] = await pool.query('SELECT * FROM cars WHERE car_id = ? AND make = ?', [id, make], (error, results) => {
-//         // callback function passed to query
-//         if (error){
-//             //Handle Error
-//         } else {
-//             // extract data and send to client
-//             const body = rows[0];
-//             res.send(body);
-//         }
-//     });
+app.get('/cars/:id/:make', cors(corsOptions), async (err, req, res, next) => {
+    const { id, make } = req.params;
 
-//     // named variables and returns a promise
-//     const [result] = pool.execute('SELECT * FROM cars WHERE car_id = :car_id AND make = car_make ', {car_id: id, car_make: make})
-//     .then(
-//             (result) => res.send(result[0])
-//         )
+    const [rows] = await pool.query('SELECT * FROM cars WHERE car_id = ? AND make = ?', [id, make], (error, results) => {
+        // callback function passed to query
+        if (error){
+            //Handle Error
+        } else {
+            // extract data and send to client
+            const body = rows[0];
+            res.send(body);
+        }
+    });
 
-//     if (err) //Handle Error
+    // named variables and returns a promise
+    // const [result] = pool.execute('SELECT * FROM cars WHERE car_id = :car_id AND make = car_make ', {car_id: id, car_make: make})
+    // .then(
+    //         (result) => res.send(result[0])
+    //     )
 
-//     // Goes to next middleware function
-//     return next();
-// });
+    // if (err) //Handle Error
+
+    // Goes to next middleware function
+    return next();
+});
 
 
 // server - routes to appropriate controller
